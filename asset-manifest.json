@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.css": "/Diggerz/static/css/main.31d6cfe0.css",
+    "main.js": "/Diggerz/static/js/main.d64e8814.js",
+    "index.html": "/Diggerz/index.html",
+    "main.d64e8814.js.map": "/Diggerz/static/js/main.d64e8814.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.31d6cfe0.css",
+    "static/js/main.d64e8814.js"
+  ]
+}
