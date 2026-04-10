@@ -228,10 +228,18 @@ export default function App(){
   const[lang,setLang]=useState("FR");
   const[step,setStep]=useState(0);
   const[vals,setVals]=useState({});
+  const[module,setModule]=useState("home");
   const t=useCallback(k=>{const e=T[k];return e?e[lang]||e.FR||k:k;},[lang]);
   const isRTL=LANGS.find(l=>l.c===lang)?.rtl;
   const allQ=[...QC,...QF,...QM,...QI];
   const curQ=allQ[step];
+  const navItems=[
+    {id:"home",k:"nav_home"},
+    {id:"test",k:"nav_test"},
+    {id:"arch",k:"nav_arch"},
+    {id:"net",k:"nav_net"},
+    {id:"soul",k:"nav_soul"}
+  ];
 
   return <Ctx.Provider value={{lang,setLang}}>
     <div dir={isRTL?"rtl":"ltr"} style={{background:P.black,minHeight:"100vh",color:P.ghost,fontFamily:P.mono}}>
@@ -251,14 +259,18 @@ export default function App(){
               <img src="/logo.png" alt="DIGGERZ logo" style={{height:28,width:"auto",display:"block"}} />
               <div style={{display:"flex",alignItems:"center",gap:6}}><Hexagon size={13} color={P.ruby} strokeWidth={2}/><span style={{fontSize:11,fontWeight:600,color:P.ghost,letterSpacing:"4px"}}>DIGGERZ</span><span style={{fontSize:6,color:P.textGhost,padding:"1px 4px",border:`1px solid ${P.border}`}}>v5 i18n</span></div>
             </div>
-            <nav style={{display:"flex"}}>{[{k:"nav_home"},{k:"nav_test"},{k:"nav_arch"},{k:"nav_net"},{k:"nav_soul"}].map(({k})=><span key={k} style={{padding:"3px 8px",fontSize:7,letterSpacing:"2px",color:P.textDim}}>{t(k)}</span>)}</nav>
+            <nav style={{display:"flex",gap:2}}>
+              {navItems.map(({id,k})=>{
+                const active=module===id;
+                return <button key={id} onClick={()=>setModule(id)} style={{padding:"3px 8px",fontSize:7,letterSpacing:"2px",fontFamily:P.mono,cursor:"pointer",border:`1px solid ${active?P.ruby+"66":P.border}`,background:active?P.ruby+"12":"transparent",color:active?P.ghost:P.textDim}}>{t(k)}</button>;
+              })}
+            </nav>
             <LangSel/>
           </div>
         </header>
 
         <div style={{maxWidth:900,margin:"0 auto",padding:"30px 16px 40px"}}>
-          {/* HOME SECTION */}
-          <div style={{textAlign:"center",marginBottom:40}}>
+          {module==="home"&&<div style={{textAlign:"center",marginBottom:40}}>
             <div style={{fontSize:9,color:P.textDim,letterSpacing:"5px",marginBottom:14}}>{nx()} {t("mc")} {nx()}</div>
             <h1 style={{fontSize:"clamp(36px,7vw,60px)",fontWeight:200,color:P.ghost,lineHeight:1,letterSpacing:"-2px",margin:"0 0 4px"}}>DIGGERZ</h1>
             <div style={{fontSize:11,color:P.ruby,letterSpacing:"8px",marginBottom:16,fontWeight:500}}>{t("nrw")}</div>
@@ -267,10 +279,9 @@ export default function App(){
             <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:24,flexWrap:"wrap"}}>
               {[{k:"q",v:"80"},{k:"ar",v:"16"},{k:"ax",v:"04"},{k:"co",v:"33"}].map(({k,v})=><div key={k} style={{border:`1px solid ${P.border}`,padding:"6px 10px"}}><div style={{fontSize:16,color:P.ruby,fontWeight:300}}>{v}</div><div style={{fontSize:6,color:P.gray,letterSpacing:"2px"}}>{t(k)}</div></div>)}
             </div>
-          </div>
+          </div>}
 
-          {/* INTERACTIVE 80Q TEST DEMO */}
-          <div style={{marginBottom:40}}>
+          {module==="test"&&<div style={{marginBottom:40}}>
             <div style={{fontSize:9,color:P.ruby,letterSpacing:"3px",marginBottom:6}}>{t("ts")}</div>
             <h2 style={{fontSize:16,fontWeight:300,color:P.ghost,marginBottom:4}}>{t("tt")}</h2>
             <p style={{fontSize:8,color:P.gray,marginBottom:12}}>{t("td")}</p>
@@ -304,18 +315,27 @@ export default function App(){
               <button onClick={()=>setStep(Math.max(0,step-1))} disabled={step===0} style={{background:"none",border:`1px solid ${step===0?P.border:P.borderAct}`,padding:"6px 12px",cursor:step===0?"default":"pointer",fontSize:8,color:step===0?P.textGhost:P.gray,display:"flex",alignItems:"center",gap:3,opacity:step===0?0.3:1}}><ChevronLeft size={10}/>{t("bk")}</button>
               <button onClick={()=>{if(vals[step]!=null)setStep(Math.min(79,step+1));}} disabled={vals[step]==null} style={{background:vals[step]!=null?P.ruby:P.bgCard,color:vals[step]!=null?P.ghost:P.textDim,border:"none",padding:"6px 16px",cursor:vals[step]!=null?"pointer":"default",fontSize:8,fontWeight:600,display:"flex",alignItems:"center",gap:3,opacity:vals[step]!=null?1:0.3}}>{step===79?t("an"):t("nx")}<ChevronRight size={10}/></button>
             </div>
-          </div>
+          </div>}
 
-          {/* TRANSLATED LABELS GRID */}
-          <div style={{marginBottom:30}}>
+          {module==="arch"&&<div style={{marginBottom:30}}>
             <div style={{fontSize:8,color:P.ruby,letterSpacing:"3px",marginBottom:8}}>{t("rx")}</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:3}}>
               {["ch","re","pc","ma","p1","p2","p3","si","ni","pt_lbl","cr","sr_lbl","tr","sv","pp","ph"].map(k=><div key={k} style={{border:`1px solid ${P.border}`,padding:"4px 6px"}}><div style={{fontSize:4,color:P.textDim,letterSpacing:"1px",marginBottom:1}}>{k}</div><div style={{fontSize:7,color:P.ghost}}>{t(k)}</div></div>)}
             </div>
-          </div>
+          </div>}
 
-          {/* SOUL LOUNGE TRANSLATED */}
-          <div>
+          {module==="net"&&<div style={{marginBottom:30}}>
+            <div style={{fontSize:9,color:P.ruby,letterSpacing:"3px",marginBottom:6}}>{t("ht")}</div>
+            <p style={{fontSize:8,color:P.gray,marginBottom:12}}>{t("ad")}</p>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8,marginBottom:10}}>
+              {["th","ac","on","sc_lbl"].map(k=><div key={k} style={{border:`1px solid ${P.border}`,padding:"10px 12px",background:P.bgCard}}><div style={{fontSize:6,color:P.textDim,letterSpacing:"2px",marginBottom:4}}>{t(k)}</div><div style={{fontSize:14,color:P.ghost,fontWeight:300}}>{Math.floor(Math.random()*90)+10}</div></div>)}
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr",gap:6}}>
+              {["nf","se","rp"].map(k=><div key={k} style={{border:`1px solid ${P.border}`,padding:"8px 10px",fontSize:8,color:P.gray,background:P.bgIn}}>{t(k)}</div>)}
+            </div>
+          </div>}
+
+          {module==="soul"&&<div>
             <div style={{fontSize:9,color:P.sable,letterSpacing:"4px",marginBottom:6,textAlign:"center"}}>{nx()} SOUL LOUNGE {nx()}</div>
             <h2 style={{fontSize:18,fontWeight:200,color:P.ghost,textAlign:"center",marginBottom:4}}>{t("ss")}</h2>
             <p style={{fontSize:9,color:P.sable,textAlign:"center",marginBottom:16}}>{t("ssd")}</p>
@@ -323,7 +343,7 @@ export default function App(){
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
               {[{t:"sp1t",d:"sp1d"},{t:"sp2t",d:"sp2d"},{t:"sp3t",d:"sp3d"},{t:"sp4t",d:"sp4d"}].map(({t:tk,d:dk},i)=><div key={i} style={{padding:8,border:`1px solid ${P.sable}22`,background:`${P.sable}06`}}><div style={{fontSize:7,color:P.sable,marginBottom:2}}>{t(tk)}</div><div style={{fontSize:7,color:P.gray,lineHeight:1.4}}>{t(dk)}</div></div>)}
             </div>
-          </div>
+          </div>}
         </div>
 
         <footer style={{borderTop:`1px solid ${P.border}`,padding:8,textAlign:"center"}}><div style={{fontSize:6,color:P.textDim,letterSpacing:"2px"}}>DIGGERZ © 2026 — SUBSTRATE OS v5 UNIFIED i18n — 🇫🇷🇬🇧🇪🇸🇧🇷🇨🇳🇯🇵🇸🇦🇮🇳 — {sn()}</div></footer>
