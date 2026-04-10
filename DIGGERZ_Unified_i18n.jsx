@@ -241,6 +241,62 @@ export default function App(){
     {id:"soul",k:"nav_soul"}
   ];
 
+  const downloadJson=useCallback((filename,data)=>{
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download=filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  },[]);
+
+  const getModuleAnswers=useCallback((start,count)=>{
+    const out={};
+    for(let i=start;i<start+count;i+=1){
+      if(vals[i]!=null){
+        out[i]={
+          qIndex:i,
+          moduleIndex:i-start+1,
+          value:vals[i],
+          text:allQ[i]?.[lang]||allQ[i]?.FR||""
+        };
+      }
+    }
+    return out;
+  },[allQ,lang,vals]);
+
+  const exportAllData=useCallback(()=>{
+    const payload={
+      timestamp:new Date().toISOString(),
+      lang,
+      currentStep:step,
+      answers:vals
+    };
+    downloadJson(`diggerz-all-${Date.now()}.json`,payload);
+  },[downloadJson,lang,step,vals]);
+
+  const exportByModule=useCallback(()=>{
+    const stamp=Date.now();
+    const chunks=[
+      {name:"tm1",start:0,count:QC.length},
+      {name:"tm2",start:QC.length,count:QF.length},
+      {name:"tm3",start:QC.length+QF.length,count:QM.length},
+      {name:"tm4",start:QC.length+QF.length+QM.length,count:QI.length}
+    ];
+    chunks.forEach(({name,start,count})=>{
+      const payload={
+        timestamp:new Date().toISOString(),
+        lang,
+        module:name,
+        start,
+        count,
+        answers:getModuleAnswers(start,count)
+      };
+      downloadJson(`diggerz-${name}-${stamp}.json`,payload);
+    });
+  },[downloadJson,getModuleAnswers,lang]);
+
   return <Ctx.Provider value={{lang,setLang}}>
     <div dir={isRTL?"rtl":"ltr"} style={{background:P.black,minHeight:"100vh",color:P.ghost,fontFamily:P.mono}}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;600;700&display=swap');
@@ -314,6 +370,11 @@ export default function App(){
             <div style={{display:"flex",justifyContent:"space-between"}}>
               <button onClick={()=>setStep(Math.max(0,step-1))} disabled={step===0} style={{background:"none",border:`1px solid ${step===0?P.border:P.borderAct}`,padding:"6px 12px",cursor:step===0?"default":"pointer",fontSize:8,color:step===0?P.textGhost:P.gray,display:"flex",alignItems:"center",gap:3,opacity:step===0?0.3:1}}><ChevronLeft size={10}/>{t("bk")}</button>
               <button onClick={()=>{if(vals[step]!=null)setStep(Math.min(79,step+1));}} disabled={vals[step]==null} style={{background:vals[step]!=null?P.ruby:P.bgCard,color:vals[step]!=null?P.ghost:P.textDim,border:"none",padding:"6px 16px",cursor:vals[step]!=null?"pointer":"default",fontSize:8,fontWeight:600,display:"flex",alignItems:"center",gap:3,opacity:vals[step]!=null?1:0.3}}>{step===79?t("an"):t("nx")}<ChevronRight size={10}/></button>
+            </div>
+
+            <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:12}}>
+              <button onClick={exportAllData} style={{background:P.bgCard,border:`1px solid ${P.borderAct}`,padding:"6px 10px",cursor:"pointer",fontSize:7,color:P.ghost,fontFamily:P.mono,letterSpacing:"1px"}}>EXPORT ALL JSON</button>
+              <button onClick={exportByModule} style={{background:P.bgCard,border:`1px solid ${P.borderAct}`,padding:"6px 10px",cursor:"pointer",fontSize:7,color:P.ghost,fontFamily:P.mono,letterSpacing:"1px"}}>EXPORT 4 MODULE FILES</button>
             </div>
           </div>}
 
