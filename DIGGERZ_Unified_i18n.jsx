@@ -356,3 +356,6 @@ export default function App(){
     </div>
   </Ctx.Provider>;
 }
+
+// Named exports for testing
+export { sn, nx, ago, LANGS, T, QC, QF, QM, QI, TERMS_I18N, TestQuestion, LangSel, Ctx };
