@@ -27,6 +27,38 @@ This workspace now includes a deployable Vite + React app based on the existing 
 - Vite config is in `vite.config.js`.
 - Old built assets and `asset-manifest.json` have been removed, and the new root `index.html` now loads the Vite app.
 
+## Realtime Survey Database
+
+This app now supports real-time survey result storage with Firebase Firestore.
+
+1. Copy `.env.example` to `.env`.
+2. Fill in your Firebase web app values:
+   - `VITE_FIREBASE_API_KEY`
+   - `VITE_FIREBASE_AUTH_DOMAIN`
+   - `VITE_FIREBASE_PROJECT_ID`
+   - `VITE_FIREBASE_STORAGE_BUCKET`
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+   - `VITE_FIREBASE_APP_ID`
+3. Create Firestore collection: `survey_results`.
+4. Restart the Vite dev server.
+
+When configured, every survey submission is saved in real time and visible in the app's `RESPONSES` view.
+
+### Firestore Rules (Production Minimal)
+
+Use the rules in [firestore.rules](firestore.rules) for a safer production baseline:
+
+- Only `create` is allowed on `survey_results` (no update/delete).
+- Payload is validated (`archKey`, `scores`, `answers`, `submittedAt`, `createdAt`).
+- `createdAt` must be server time.
+- All other collections are blocked by default.
+
+Apply quickly from Firebase Console:
+
+1. Open Firestore Database > Rules.
+2. Replace rules with content from [firestore.rules](firestore.rules).
+3. Publish.
+
 ## GitHub Pages
 
 This repository is configured to deploy from the `dist/` folder to the `gh-pages` branch when `main` is pushed.

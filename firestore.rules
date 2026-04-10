@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function validArchetype(value) {
+      return value is string && value.size() == 4;
+    }
+
+    function validScores(scores) {
+      return scores is map
+        && scores.keys().hasOnly(['SI', 'PT', 'GV', 'CE'])
+        && scores.SI is number && scores.SI >= 0 && scores.SI <= 100
+        && scores.PT is number && scores.PT >= 0 && scores.PT <= 100
+        && scores.GV is number && scores.GV >= 0 && scores.GV <= 100
+        && scores.CE is number && scores.CE >= 0 && scores.CE <= 100;
+    }
+
+    function validPayload(data) {
+      return data.keys().hasOnly(['archKey', 'scores', 'answers', 'submittedAt', 'createdAt'])
+        && validArchetype(data.archKey)
+        && validScores(data.scores)
+        && data.answers is map
+        && data.answers.size() <= 100
+        && data.submittedAt is string
+        && data.createdAt == request.time;
+    }
+
+    match /survey_results/{docId} {
+      allow read: if true;
+      allow create: if validPayload(request.resource.data);
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
