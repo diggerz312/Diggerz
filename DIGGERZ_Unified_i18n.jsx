@@ -1,6 +1,9 @@
-import { useState, useCallback, useMemo, createContext, useContext } from "react";
-import { Shield, Eye, Gem, Crown, ChevronRight, ChevronLeft, Lock, Terminal, Database, Hexagon, Fingerprint, Scan, Activity, Zap, User, Users, ArrowRight, RotateCcw, Brain, Heart, Feather, Palette, Sparkles, Globe, Cpu, Layers, Aperture, Target, Compass, Anchor, Flame, Sun, Moon, Box, Play, Pause, Volume2, Radio, Star, MessageCircle, Send, ThumbsUp, Plus, Bell, X, Search, Pin, ChevronDown } from "lucide-react";
+import { useState, useCallback, useMemo, createContext, useContext, useEffect, lazy, Suspense } from "react";
+import { Shield, Eye, Gem, Crown, ChevronRight, ChevronLeft, Lock, Terminal, Database, Hexagon, Fingerprint, Scan, Activity, Zap, User, Users, ArrowRight, RotateCcw, Brain, Heart, Feather, Palette, Sparkles, Globe, Cpu, Layers, Aperture, Target, Compass, Anchor, Flame, Sun, Moon, Box, Play, Pause, Volume2, Radio, Star, MessageCircle, Send, ThumbsUp, Plus, Bell, X, Search, Pin, ChevronDown, LogOut } from "lucide-react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from "recharts";
+import { useAuth } from "./src/auth/AuthContext.jsx";
+import { getRedditCallbackParams, handleRedditCallback } from "./src/auth/redditOAuth.js";
+const AuthModal = lazy(() => import("./src/auth/AuthModal.jsx"));
 
 // ═══════════════════════════════════════════════════════════════
 //  DIGGERZ SUBSTRATE OS v5 — UNIFIED i18n EDITION
@@ -228,10 +231,23 @@ export default function App(){
   const[lang,setLang]=useState("FR");
   const[step,setStep]=useState(0);
   const[vals,setVals]=useState({});
+  const[authOpen,setAuthOpen]=useState(false);
   const t=useCallback(k=>{const e=T[k];return e?e[lang]||e.FR||k:k;},[lang]);
   const isRTL=LANGS.find(l=>l.c===lang)?.rtl;
   const allQ=[...QC,...QF,...QM,...QI];
   const curQ=allQ[step];
+  const{user,login,logout}=useAuth();
+
+  // Handle Reddit OAuth callback (code returned in URL query params)
+  useEffect(()=>{
+    const params=getRedditCallbackParams();
+    if(!params||!params.code)return;
+    // Clean URL before async work
+    window.history.replaceState({},"",window.location.pathname);
+    handleRedditCallback(params.code,params.state)
+      .then(userData=>login(userData))
+      .catch(err=>console.error("Reddit callback error:",err));
+  },[login]);
 
   return <Ctx.Provider value={{lang,setLang}}>
     <div dir={isRTL?"rtl":"ltr"} style={{background:P.black,minHeight:"100vh",color:P.ghost,fontFamily:P.mono}}>
@@ -262,7 +278,20 @@ export default function App(){
               <div style={{display:"flex",alignItems:"center",gap:6}}><Hexagon size={13} color={P.ruby} strokeWidth={2}/><span style={{fontSize:11,fontWeight:600,color:P.ghost,letterSpacing:"4px"}}>DIGGERZ</span><span style={{fontSize:6,color:P.textGhost,padding:"1px 4px",border:`1px solid ${P.border}`}}>v5 i18n</span></div>
             </div>
             <nav style={{display:"flex",flexWrap:"wrap",justifyContent:"center"}}>{[{k:"nav_home"},{k:"nav_test"},{k:"nav_arch"},{k:"nav_net"},{k:"nav_soul"}].map(({k})=><span key={k} style={{padding:"3px 8px",fontSize:7,letterSpacing:"2px",color:P.textDim}}>{t(k)}</span>)}</nav>
-            <LangSel/>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <LangSel/>
+              {user ? (
+                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                  {user.avatar
+                    ? <img src={user.avatar} alt={user.name} style={{width:22,height:22,borderRadius:"50%",border:`1px solid ${P.border}`,objectFit:"cover"}}/>
+                    : <div style={{width:22,height:22,borderRadius:"50%",border:`1px solid ${P.border}`,background:P.bgCard,display:"flex",alignItems:"center",justifyContent:"center"}}><User size={11} color={P.gray}/></div>}
+                  <span style={{fontSize:8,color:P.ghost,letterSpacing:"1px",maxWidth:80,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.name}</span>
+                  <button onClick={logout} title="Sign out" style={{background:"none",border:"none",cursor:"pointer",padding:2,display:"flex",alignItems:"center",color:P.textDim}} onMouseEnter={e=>e.currentTarget.style.color=P.ruby} onMouseLeave={e=>e.currentTarget.style.color=P.textDim}><LogOut size={11}/></button>
+                </div>
+              ) : (
+                <button onClick={()=>setAuthOpen(true)} style={{background:"none",border:`1px solid ${P.border}`,padding:"3px 9px",cursor:"pointer",fontFamily:P.mono,fontSize:7,color:P.gray,letterSpacing:"2px",display:"flex",alignItems:"center",gap:4}} onMouseEnter={e=>{e.currentTarget.style.borderColor=P.ruby;e.currentTarget.style.color=P.ghost;}} onMouseLeave={e=>{e.currentTarget.style.borderColor=P.border;e.currentTarget.style.color=P.gray;}}><User size={9}/>SIGN IN</button>
+              )}
+            </div>
           </div>
         </header>
 
@@ -342,6 +371,7 @@ export default function App(){
 
         <footer style={{borderTop:`1px solid ${P.border}`,padding:8,textAlign:"center"}}><div style={{fontSize:6,color:P.textDim,letterSpacing:"2px"}}>DIGGERZ © 2026 — SUBSTRATE OS v5 UNIFIED i18n — 🇫🇷🇬🇧🇪🇸🇧🇷🇨🇳🇯🇵🇸🇦🇮🇳 — {sn()}</div></footer>
       </div>
+      {authOpen&&<Suspense fallback={null}><AuthModal onClose={()=>setAuthOpen(false)}/></Suspense>}
     </div>
   </Ctx.Provider>;
 }
