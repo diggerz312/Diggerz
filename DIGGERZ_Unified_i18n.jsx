@@ -238,6 +238,16 @@ export default function App(){
       <style>{`@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;600;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{background:${P.black}}
 ::selection{background:${P.ruby}44;color:${P.ghost}}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:${P.black}}::-webkit-scrollbar-thumb{background:${P.border}}
+    .layout-shell{max-width:1200px;margin:0 auto;padding:24px 16px 42px}
+    .layout-grid{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:14px;align-items:start}
+    .stack{display:grid;gap:14px}
+    .panel{border:1px solid ${P.border};background:${P.bgCard}cc;padding:14px}
+    .hero-card{text-align:center}
+    .test-panel{position:sticky;top:68px}
+    .labels-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+    .soul-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    @media (max-width:1020px){.layout-grid{grid-template-columns:1fr}.test-panel{position:static}}
+    @media (max-width:760px){.labels-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.soul-grid{grid-template-columns:1fr}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}`}</style>
 
       <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 10% 40%,${P.ruby}06,transparent 50%),${P.black}`}}/>
@@ -246,19 +256,21 @@ export default function App(){
         {/* HEADER */}
         <header style={{borderBottom:`1px solid ${P.border}`,background:`${P.black}e8`,backdropFilter:"blur(16px)"}}>
           <div style={{height:2,background:`linear-gradient(90deg,${P.ruby},transparent 30%,transparent 70%,${P.sable})`}}/>
-          <div style={{maxWidth:1200,margin:"0 auto",padding:"0 14px",display:"flex",alignItems:"center",justifyContent:"space-between",height:42}}>
+          <div style={{maxWidth:1200,margin:"0 auto",padding:"8px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,flexWrap:"wrap"}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
               <img src="/logo.png" alt="DIGGERZ logo" style={{height:28,width:"auto",display:"block"}} />
               <div style={{display:"flex",alignItems:"center",gap:6}}><Hexagon size={13} color={P.ruby} strokeWidth={2}/><span style={{fontSize:11,fontWeight:600,color:P.ghost,letterSpacing:"4px"}}>DIGGERZ</span><span style={{fontSize:6,color:P.textGhost,padding:"1px 4px",border:`1px solid ${P.border}`}}>v5 i18n</span></div>
             </div>
-            <nav style={{display:"flex"}}>{[{k:"nav_home"},{k:"nav_test"},{k:"nav_arch"},{k:"nav_net"},{k:"nav_soul"}].map(({k})=><span key={k} style={{padding:"3px 8px",fontSize:7,letterSpacing:"2px",color:P.textDim}}>{t(k)}</span>)}</nav>
+            <nav style={{display:"flex",flexWrap:"wrap",justifyContent:"center"}}>{[{k:"nav_home"},{k:"nav_test"},{k:"nav_arch"},{k:"nav_net"},{k:"nav_soul"}].map(({k})=><span key={k} style={{padding:"3px 8px",fontSize:7,letterSpacing:"2px",color:P.textDim}}>{t(k)}</span>)}</nav>
             <LangSel/>
           </div>
         </header>
 
-        <div style={{maxWidth:900,margin:"0 auto",padding:"30px 16px 40px"}}>
-          {/* HOME SECTION */}
-          <div style={{textAlign:"center",marginBottom:40}}>
+        <div className="layout-shell">
+          <div className="layout-grid">
+            <div className="stack">
+              {/* HOME SECTION */}
+              <div className="panel hero-card">
             <div style={{fontSize:9,color:P.textDim,letterSpacing:"5px",marginBottom:14}}>{nx()} {t("mc")} {nx()}</div>
             <h1 style={{fontSize:"clamp(36px,7vw,60px)",fontWeight:200,color:P.ghost,lineHeight:1,letterSpacing:"-2px",margin:"0 0 4px"}}>DIGGERZ</h1>
             <div style={{fontSize:11,color:P.ruby,letterSpacing:"8px",marginBottom:16,fontWeight:500}}>{t("nrw")}</div>
@@ -269,8 +281,28 @@ export default function App(){
             </div>
           </div>
 
-          {/* INTERACTIVE 80Q TEST DEMO */}
-          <div style={{marginBottom:40}}>
+              {/* TRANSLATED LABELS GRID */}
+              <div className="panel">
+                <div style={{fontSize:8,color:P.ruby,letterSpacing:"3px",marginBottom:8}}>{t("rx")}</div>
+                <div className="labels-grid">
+                  {["ch","re","pc","ma","p1","p2","p3","si","ni","pt_lbl","cr","sr_lbl","tr","sv","pp","ph"].map(k=><div key={k} style={{border:`1px solid ${P.border}`,padding:"4px 6px"}}><div style={{fontSize:4,color:P.textDim,letterSpacing:"1px",marginBottom:1}}>{k}</div><div style={{fontSize:7,color:P.ghost}}>{t(k)}</div></div>)}
+                </div>
+              </div>
+
+              {/* SOUL LOUNGE TRANSLATED */}
+              <div className="panel">
+                <div style={{fontSize:9,color:P.sable,letterSpacing:"4px",marginBottom:6,textAlign:"center"}}>{nx()} SOUL LOUNGE {nx()}</div>
+                <h2 style={{fontSize:18,fontWeight:200,color:P.ghost,textAlign:"center",marginBottom:4}}>{t("ss")}</h2>
+                <p style={{fontSize:9,color:P.sable,textAlign:"center",marginBottom:16}}>{t("ssd")}</p>
+                <div style={{fontSize:7,color:P.textDim,letterSpacing:"2px",marginBottom:8}}>{t("ph")}</div>
+                <div className="soul-grid">
+                  {[{t:"sp1t",d:"sp1d"},{t:"sp2t",d:"sp2d"},{t:"sp3t",d:"sp3d"},{t:"sp4t",d:"sp4d"}].map(({t:tk,d:dk},i)=><div key={i} style={{padding:8,border:`1px solid ${P.sable}22`,background:`${P.sable}06`}}><div style={{fontSize:7,color:P.sable,marginBottom:2}}>{t(tk)}</div><div style={{fontSize:7,color:P.gray,lineHeight:1.4}}>{t(dk)}</div></div>)}
+                </div>
+              </div>
+            </div>
+
+            {/* INTERACTIVE 80Q TEST DEMO */}
+            <div className="panel test-panel">
             <div style={{fontSize:9,color:P.ruby,letterSpacing:"3px",marginBottom:6}}>{t("ts")}</div>
             <h2 style={{fontSize:16,fontWeight:300,color:P.ghost,marginBottom:4}}>{t("tt")}</h2>
             <p style={{fontSize:8,color:P.gray,marginBottom:12}}>{t("td")}</p>
@@ -305,24 +337,6 @@ export default function App(){
               <button onClick={()=>{if(vals[step]!=null)setStep(Math.min(79,step+1));}} disabled={vals[step]==null} style={{background:vals[step]!=null?P.ruby:P.bgCard,color:vals[step]!=null?P.ghost:P.textDim,border:"none",padding:"6px 16px",cursor:vals[step]!=null?"pointer":"default",fontSize:8,fontWeight:600,display:"flex",alignItems:"center",gap:3,opacity:vals[step]!=null?1:0.3}}>{step===79?t("an"):t("nx")}<ChevronRight size={10}/></button>
             </div>
           </div>
-
-          {/* TRANSLATED LABELS GRID */}
-          <div style={{marginBottom:30}}>
-            <div style={{fontSize:8,color:P.ruby,letterSpacing:"3px",marginBottom:8}}>{t("rx")}</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:3}}>
-              {["ch","re","pc","ma","p1","p2","p3","si","ni","pt_lbl","cr","sr_lbl","tr","sv","pp","ph"].map(k=><div key={k} style={{border:`1px solid ${P.border}`,padding:"4px 6px"}}><div style={{fontSize:4,color:P.textDim,letterSpacing:"1px",marginBottom:1}}>{k}</div><div style={{fontSize:7,color:P.ghost}}>{t(k)}</div></div>)}
-            </div>
-          </div>
-
-          {/* SOUL LOUNGE TRANSLATED */}
-          <div>
-            <div style={{fontSize:9,color:P.sable,letterSpacing:"4px",marginBottom:6,textAlign:"center"}}>{nx()} SOUL LOUNGE {nx()}</div>
-            <h2 style={{fontSize:18,fontWeight:200,color:P.ghost,textAlign:"center",marginBottom:4}}>{t("ss")}</h2>
-            <p style={{fontSize:9,color:P.sable,textAlign:"center",marginBottom:16}}>{t("ssd")}</p>
-            <div style={{fontSize:7,color:P.textDim,letterSpacing:"2px",marginBottom:8}}>{t("ph")}</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-              {[{t:"sp1t",d:"sp1d"},{t:"sp2t",d:"sp2d"},{t:"sp3t",d:"sp3d"},{t:"sp4t",d:"sp4d"}].map(({t:tk,d:dk},i)=><div key={i} style={{padding:8,border:`1px solid ${P.sable}22`,background:`${P.sable}06`}}><div style={{fontSize:7,color:P.sable,marginBottom:2}}>{t(tk)}</div><div style={{fontSize:7,color:P.gray,lineHeight:1.4}}>{t(dk)}</div></div>)}
-            </div>
           </div>
         </div>
 
