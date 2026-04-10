@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo, createContext, useContext } from "react";
+import { useState, useCallback, useMemo, createContext, useContext } from "react";
 import { Shield, Eye, Gem, Crown, ChevronRight, ChevronLeft, Lock, Terminal, Database, Hexagon, Fingerprint, Scan, Activity, Zap, User, Users, ArrowRight, RotateCcw, Brain, Heart, Feather, Palette, Sparkles, Globe, Cpu, Layers, Aperture, Target, Compass, Anchor, Flame, Sun, Moon, Box, Play, Pause, Volume2, Radio, Star, MessageCircle, Send, ThumbsUp, Plus, Bell, X, Search, Pin, ChevronDown } from "lucide-react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from "recharts";
 
@@ -228,48 +228,23 @@ export default function App(){
   const[lang,setLang]=useState("FR");
   const[step,setStep]=useState(0);
   const[vals,setVals]=useState({});
-  const revealRefs=useRef([]);
   const t=useCallback(k=>{const e=T[k];return e?e[lang]||e.FR||k:k;},[lang]);
   const isRTL=LANGS.find(l=>l.c===lang)?.rtl;
   const allQ=[...QC,...QF,...QM,...QI];
   const curQ=allQ[step];
-
-  const revealSection = useCallback((el) => {
-    if (el && !revealRefs.current.includes(el)) revealRefs.current.push(el);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.IntersectionObserver) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("visible");
-        });
-      },
-      { threshold: 0.18, rootMargin: "0px 0px -10% 0px" }
-    );
-
-    revealRefs.current.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
 
   return <Ctx.Provider value={{lang,setLang}}>
     <div dir={isRTL?"rtl":"ltr"} style={{background:P.black,minHeight:"100vh",color:P.ghost,fontFamily:P.mono}}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;600;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{background:${P.black}}
 ::selection{background:${P.ruby}44;color:${P.ghost}}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:${P.black}}::-webkit-scrollbar-thumb{background:${P.border}}
-.reveal{opacity:0;transform:translateY(18px);transition:opacity 0.8s ease,transform 0.8s ease;will-change:opacity,transform;}
-.reveal.visible{opacity:1;transform:none;}
-.reveal-delay-1{transition-delay:0.08s;}
-.reveal-delay-2{transition-delay:0.16s;}
-.reveal-delay-3{transition-delay:0.24s;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}`}</style>
 
       <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 10% 40%,${P.ruby}06,transparent 50%),${P.black}`}}/>
 
       <div style={{position:"relative",zIndex:2}}>
         {/* HEADER */}
-        <header ref={revealSection} className="reveal reveal-delay-1" style={{borderBottom:`1px solid ${P.border}`,background:`${P.black}e8`,backdropFilter:"blur(16px)"}}>
+        <header style={{borderBottom:`1px solid ${P.border}`,background:`${P.black}e8`,backdropFilter:"blur(16px)"}}>
           <div style={{height:2,background:`linear-gradient(90deg,${P.ruby},transparent 30%,transparent 70%,${P.sable})`}}/>
           <div style={{maxWidth:1200,margin:"0 auto",padding:"0 14px",display:"flex",alignItems:"center",justifyContent:"space-between",height:42}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -283,7 +258,7 @@ export default function App(){
 
         <div style={{maxWidth:900,margin:"0 auto",padding:"30px 16px 40px"}}>
           {/* HOME SECTION */}
-          <div ref={revealSection} className="reveal reveal-delay-2" style={{textAlign:"center",marginBottom:40}}>
+          <div style={{textAlign:"center",marginBottom:40}}>
             <div style={{fontSize:9,color:P.textDim,letterSpacing:"5px",marginBottom:14}}>{nx()} {t("mc")} {nx()}</div>
             <h1 style={{fontSize:"clamp(36px,7vw,60px)",fontWeight:200,color:P.ghost,lineHeight:1,letterSpacing:"-2px",margin:"0 0 4px"}}>DIGGERZ</h1>
             <div style={{fontSize:11,color:P.ruby,letterSpacing:"8px",marginBottom:16,fontWeight:500}}>{t("nrw")}</div>
@@ -295,7 +270,7 @@ export default function App(){
           </div>
 
           {/* INTERACTIVE 80Q TEST DEMO */}
-          <div ref={revealSection} className="reveal reveal-delay-3" style={{marginBottom:40}}>
+          <div style={{marginBottom:40}}>
             <div style={{fontSize:9,color:P.ruby,letterSpacing:"3px",marginBottom:6}}>{t("ts")}</div>
             <h2 style={{fontSize:16,fontWeight:300,color:P.ghost,marginBottom:4}}>{t("tt")}</h2>
             <p style={{fontSize:8,color:P.gray,marginBottom:12}}>{t("td")}</p>
@@ -332,7 +307,7 @@ export default function App(){
           </div>
 
           {/* TRANSLATED LABELS GRID */}
-          <div ref={revealSection} className="reveal reveal-delay-2" style={{marginBottom:30}}>
+          <div style={{marginBottom:30}}>
             <div style={{fontSize:8,color:P.ruby,letterSpacing:"3px",marginBottom:8}}>{t("rx")}</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:3}}>
               {["ch","re","pc","ma","p1","p2","p3","si","ni","pt_lbl","cr","sr_lbl","tr","sv","pp","ph"].map(k=><div key={k} style={{border:`1px solid ${P.border}`,padding:"4px 6px"}}><div style={{fontSize:4,color:P.textDim,letterSpacing:"1px",marginBottom:1}}>{k}</div><div style={{fontSize:7,color:P.ghost}}>{t(k)}</div></div>)}
@@ -340,7 +315,7 @@ export default function App(){
           </div>
 
           {/* SOUL LOUNGE TRANSLATED */}
-          <div ref={revealSection} className="reveal reveal-delay-3">
+          <div>
             <div style={{fontSize:9,color:P.sable,letterSpacing:"4px",marginBottom:6,textAlign:"center"}}>{nx()} SOUL LOUNGE {nx()}</div>
             <h2 style={{fontSize:18,fontWeight:200,color:P.ghost,textAlign:"center",marginBottom:4}}>{t("ss")}</h2>
             <p style={{fontSize:9,color:P.sable,textAlign:"center",marginBottom:16}}>{t("ssd")}</p>
