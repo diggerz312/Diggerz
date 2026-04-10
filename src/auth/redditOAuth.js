@@ -70,7 +70,7 @@ export async function handleRedditCallback(code, state) {
   const verifier = sessionStorage.getItem(REDDIT_VERIFIER_KEY);
 
   if (!savedState || savedState !== state) {
-    throw new Error("State mismatch — possible CSRF attack.");
+    throw new Error("State mismatch -- possible CSRF attack.");
   }
 
   sessionStorage.removeItem(REDDIT_STATE_KEY);

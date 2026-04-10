@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, createContext, useContext, useEffect, lazy, Suspense } from "react";
+import { useState, useCallback, useMemo, createContext, useContext, useEffect, useRef, lazy, Suspense } from "react";
 import { Shield, Eye, Gem, Crown, ChevronRight, ChevronLeft, Lock, Terminal, Database, Hexagon, Fingerprint, Scan, Activity, Zap, User, Users, ArrowRight, RotateCcw, Brain, Heart, Feather, Palette, Sparkles, Globe, Cpu, Layers, Aperture, Target, Compass, Anchor, Flame, Sun, Moon, Box, Play, Pause, Volume2, Radio, Star, MessageCircle, Send, ThumbsUp, Plus, Bell, X, Search, Pin, ChevronDown, LogOut } from "lucide-react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from "recharts";
 import { useAuth } from "./src/auth/AuthContext.jsx";
@@ -237,12 +237,15 @@ export default function App(){
   const allQ=[...QC,...QF,...QM,...QI];
   const curQ=allQ[step];
   const{user,login,logout}=useAuth();
+  const redditCallbackHandled=useRef(false);
 
   // Handle Reddit OAuth callback (code returned in URL query params)
   useEffect(()=>{
+    if(redditCallbackHandled.current)return;
     const params=getRedditCallbackParams();
     if(!params||!params.code)return;
-    // Clean URL before async work
+    redditCallbackHandled.current=true;
+    // Clean URL before async work to prevent re-processing on re-render
     window.history.replaceState({},"",window.location.pathname);
     handleRedditCallback(params.code,params.state)
       .then(userData=>login(userData))
