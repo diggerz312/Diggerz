@@ -1,6 +1,6 @@
 # Diggerz
 
-This workspace now includes a deployable Vite + React app based on the existing `DIGGERZ_Unified_i18n.jsx` component.
+This workspace now includes a deployable Vite + React app based on the existing `DIGGERZ_Unified_v5 (2).jsx` component.
 
 ## Run locally
 
