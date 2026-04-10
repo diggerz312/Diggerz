@@ -310,9 +310,9 @@ export default function App(){
         {/* HEADER */}
         <header style={{borderBottom:`1px solid ${P.border}`,background:`${P.black}e8`,backdropFilter:"blur(16px)"}}>
           <div style={{height:2,background:`linear-gradient(90deg,${P.ruby},transparent 30%,transparent 70%,${P.sable})`}}/>
-          <div style={{maxWidth:1200,margin:"0 auto",padding:"0 14px",display:"flex",alignItems:"center",justifyContent:"space-between",height:42}}>
+          <div style={{maxWidth:1200,margin:"0 auto",padding:"0 14px",display:"flex",alignItems:"center",justifyContent:"space-between",height:56}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
-              <img src="/logo.png" alt="DIGGERZ logo" style={{height:28,width:"auto",display:"block"}} />
+              <img src="/logo.png" alt="DIGGERZ logo" style={{width:128,height:38,objectFit:"cover",objectPosition:"center 58%",display:"block",mixBlendMode:"screen",filter:"brightness(1.15) contrast(1.25)",opacity:0.95}} />
               <div style={{display:"flex",alignItems:"center",gap:6}}><Hexagon size={13} color={P.ruby} strokeWidth={2}/><span style={{fontSize:11,fontWeight:600,color:P.ghost,letterSpacing:"4px"}}>DIGGERZ</span><span style={{fontSize:6,color:P.textGhost,padding:"1px 4px",border:`1px solid ${P.border}`}}>v5 i18n</span></div>
             </div>
             <nav style={{display:"flex",gap:2}}>
